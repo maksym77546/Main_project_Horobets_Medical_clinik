@@ -6,11 +6,6 @@
             <div class="col-md-4 mb-3">
                 <h5 class="fw-bold text-primary mb-3">🏥 Медична Клініка</h5>
                 <p class="small text-white-50 mb-3" style="line-height: 1.6;">Ми забезпечуємо високоякісне медичне обслуговування, використовуючи сучасні методики діагностики та лікування. Ваше здоров'я — наш пріоритет!</p>
-                <div class="d-flex gap-2 justify-content-center justify-content-md-start mt-2">
-                    <a href="#" class="btn btn-outline-primary btn-sm rounded-circle text-white border-secondary" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">📘</a>
-                    <a href="#" class="btn btn-outline-primary btn-sm rounded-circle text-white border-secondary" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">📷</a>
-                    <a href="#" class="btn btn-outline-primary btn-sm rounded-circle text-white border-secondary" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">✈️</a>
-                </div>
             </div>
             
             <!-- Column 2: Contacts -->

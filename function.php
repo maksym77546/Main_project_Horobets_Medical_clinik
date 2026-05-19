@@ -11,9 +11,13 @@ include_once ('conf.php');
         return $menus;
     }
 // отримання списку лікарів
-function get_doctors() {
+function get_doctors($search = '') {
      global $conn;
      $sql = "SELECT * FROM doctors";
+     if (!empty($search)) {
+         $search = mysqli_real_escape_string($conn, $search);
+         $sql .= " WHERE doctor_name LIKE '%$search%' OR specialization LIKE '%$search%'";
+     }
      $result = mysqli_query($conn, $sql);
 
      $doctors = mysqli_fetch_all($result, MYSQLI_ASSOC);

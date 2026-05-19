@@ -14,9 +14,23 @@ include_once ('header.php');
     <div class="container">
         <div class="row">
             <div class="col-lg-8">
-                <h2 class="mb-4">Наші лікарі</h2>
+                <?php 
+                $search = trim($_GET['search'] ?? '');
+                $doctors = get_doctors($search);
+                ?>
+                <h2 class="mb-4">
+                    <?php if (!empty($search)): ?>
+                        Результати пошуку: <span class="text-primary">"<?=htmlspecialchars($search)?>"</span>
+                    <?php else: ?>
+                        Наші лікарі
+                    <?php endif; ?>
+                </h2>
                 <div class="row">
-                    <?php $doctors = get_doctors()?>
+                    <?php if (empty($doctors)): ?>
+                    <div class="col-12">
+                        <div class="alert alert-info">Лікарів за вашим запитом не знайдено. Спробуйте змінити запит.</div>
+                    </div>
+                    <?php endif; ?>
                     <?php foreach ($doctors as $doctor):?>
                     <div class="col-md-6 mb-4">
                         <div class="card h-100 shadow-sm border-0">
@@ -37,10 +51,17 @@ include_once ('header.php');
                 <div class="card mb-4 shadow-sm border-0">
                     <div class="card-header bg-primary text-white">Пошук</div>
                     <div class="card-body">
-                        <div class="input-group">
-                            <input class="form-control" type="text" placeholder="Пошук лікаря..." aria-label="Search" aria-describedby="button-search" />
-                            <button class="btn btn-primary" id="button-search" type="button">Шукати!</button>
-                        </div>
+                        <form action="index.php" method="GET">
+                            <div class="input-group">
+                                <input class="form-control" type="text" name="search" placeholder="Пошук лікаря..." aria-label="Search" aria-describedby="button-search" value="<?=htmlspecialchars($_GET['search'] ?? '')?>" />
+                                <button class="btn btn-primary" id="button-search" type="submit">Шукати!</button>
+                            </div>
+                            <?php if (!empty($search)): ?>
+                            <div class="text-end mt-2">
+                                <a href="index.php" class="text-decoration-none small text-danger">✕ Скинути пошук</a>
+                            </div>
+                            <?php endif; ?>
+                        </form>
                     </div>
                 </div>
                 <!-- Categories widget-->
