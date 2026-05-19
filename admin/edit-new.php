@@ -1,55 +1,83 @@
 <?php
-    include_once ('../function.php');
-    include_once ('../conf.php');
+session_start();
+if (!isset($_SESSION['admin'])) {
+    header('Location: ../login/index.php');
+    exit();
+}
+include_once('../conf.php');
 
+$id = intval($_GET['id'] ?? 0);
+if (!$id) { header('Location: index.php'); exit(); }
+
+$sql    = "SELECT * FROM doctors WHERE id = $id";
+$result = mysqli_query($conn, $sql);
+$doctor = mysqli_fetch_assoc($result);
+if (!$doctor) { header('Location: index.php'); exit(); }
+
+$menus = mysqli_fetch_all(mysqli_query($conn, "SELECT * FROM menu"), MYSQLI_ASSOC);
 ?>
-<!doctype html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Редагування новини</title>
-    <link rel="stylesheet" href="../css/styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Редагувати лікаря | Адмін</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>body { background: #f0f4f8; }</style>
 </head>
 <body>
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-6">
-            <h3>Форма редагування запису</h3>
-            <?php
-            $post_id = $_GET['post_id'];
-            if (!is_numeric($post_id)) exit();
-
-            $post = get_news_by_id($post_id);
-            ?>
-            <form action="check-new.php" method="post" enctype="multipart/form-data">
+<div class="container py-5" style="max-width:700px">
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-header bg-warning text-dark rounded-top-4">
+            <h2 class="h5 mb-0">✏️ Редагувати лікаря #<?=$doctor['id']?></h2>
+        </div>
+        <div class="card-body p-4">
+            <?php if (isset($_GET['error'])): ?>
+            <div class="alert alert-danger">Заповніть усі поля!</div>
+            <?php endif; ?>
+            <form action="update.php" method="POST">
+                <input type="hidden" name="id" value="<?=$doctor['id']?>" />
                 <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Вкажіть назву новини</label>
-                    <input type="text" name="title" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="<?=$post['title']?>">
+                    <label class="form-label fw-bold" for="doctor_name">ПІБ лікаря</label>
+                    <input type="text" name="doctor_name" id="doctor_name" class="form-control"
+                           value="<?=htmlspecialchars($doctor['doctor_name'])?>" required />
                 </div>
                 <div class="mb-3">
-                    <label for="exampleInputPassword1" class="form-label">Введіть текст новини</label><br>
-                    <textarea name="content" style="width: 100%; box-sizing: border-box; resize: vertical; min-height: 150px;"><?=$post['content']?></textarea>
+                    <label class="form-label fw-bold" for="image">URL фото</label>
+                    <input type="url" name="image" id="image" class="form-control"
+                           value="<?=htmlspecialchars($doctor['image'])?>" required />
+                    <div class="mt-2">
+                        <img src="<?=htmlspecialchars($doctor['image'])?>" alt="preview"
+                             style="height:80px; border-radius:8px; object-fit:cover;" />
+                    </div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-check-label" for="exampleCheck1">Завантажте зображення</label>
-                    <input type="file" name="image" class="form-control-file"   >
+                    <label class="form-label fw-bold" for="specialization">Спеціалізація / Опис</label>
+                    <textarea name="specialization" id="specialization" class="form-control" rows="4" required><?=htmlspecialchars($doctor['specialization'])?></textarea>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label" for="exampleCheck1">Дата публікації</label>
-                    <input type="date" name="date" class="form-control" value="<?=$post['datetime']?>">
+                    <label class="form-label fw-bold" for="datetime">Дата</label>
+                    <input type="date" name="datetime" id="datetime" class="form-control"
+                           value="<?=$doctor['datetime']?>" required />
                 </div>
-                <?php $menus = get_menu();?>
-                <div class="mb-3">
-                    <label class="form-label" for="exampleCheck1">Категорія новини</label>
-                    <input type="text" name="menu_id" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="<?=$post['menu_id']?>">
+                <div class="mb-4">
+                    <label class="form-label fw-bold" for="menu_id">Категорія</label>
+                    <select name="menu_id" id="menu_id" class="form-select" required>
+                        <?php foreach ($menus as $menu): ?>
+                        <option value="<?=$menu['id']?>" <?=$menu['id']==$doctor['menu_id']?'selected':''?>>
+                            <?=htmlspecialchars($menu['title'])?>
+                        </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Оновити новину</button>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-warning flex-grow-1">💾 Оновити дані</button>
+                    <a href="index.php" class="btn btn-outline-secondary">Скасувати</a>
+                </div>
             </form>
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

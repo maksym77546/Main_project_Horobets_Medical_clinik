@@ -1,8 +1,19 @@
 <?php
-    include_once ('../function.php');
-    include_once ('../conf.php');
-$new_id = $_GET['new_id'];
-if (!is_numeric($new_id)) exit();
+session_start();
+if (!isset($_SESSION['admin'])) {
+    header('Location: ../login/index.php');
+    exit();
+}
+include_once('../conf.php');
 
-$new = delete_new($new_id);
-header('location: index.php');
+$id = intval($_GET['id'] ?? 0);
+if (!$id) {
+    header('Location: index.php');
+    exit();
+}
+
+$sql = "DELETE FROM doctors WHERE id = $id";
+mysqli_query($conn, $sql);
+
+header('Location: index.php?msg=deleted');
+exit();
