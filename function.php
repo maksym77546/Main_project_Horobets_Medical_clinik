@@ -10,32 +10,32 @@ include_once ('conf.php');
         $menus = mysqli_fetch_all($result, MYSQLI_ASSOC);
         return $menus;
     }
-// отримання списку новин
-function get_news() {
+// отримання списку лікарів
+function get_doctors() {
      global $conn;
-     $sql = "SELECT * FROM news";
+     $sql = "SELECT * FROM doctors";
      $result = mysqli_query($conn, $sql);
 
-     $news = mysqli_fetch_all($result, MYSQLI_ASSOC);
-     return $news;
+     $doctors = mysqli_fetch_all($result, MYSQLI_ASSOC);
+     return $doctors;
 }
-// отримання окремої новини
-function get_news_by_id($post_id) {
+// отримання окремого лікаря
+function get_doctor_by_id($doctor_id) {
         global $conn;
-        $sql = "SELECT * FROM news WHERE id =" .$post_id;
+        $sql = "SELECT * FROM doctors WHERE id =" .$doctor_id;
         $result = mysqli_query($conn, $sql);
-        $post = mysqli_fetch_assoc($result);
-        return $post;
+        $doctor = mysqli_fetch_assoc($result);
+        return $doctor;
 }
-//отримання категорії новини
-function get_new_by_category($category_id) {
+//отримання лікарів за категорією
+function get_doctors_by_category($category_id) {
         global $conn;
         $category_id = mysqli_real_escape_string($conn, $category_id);
-        $sql = "SELECT * FROM news WHERE menu_id=".$category_id;
+        $sql = "SELECT * FROM doctors WHERE menu_id=".$category_id;
 
         $result = mysqli_query($conn, $sql);
-        $new = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        return $new;
+        $doctors = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        return $doctors;
 }
 // отримання назви категорії
 function get_category_title($category_id) {
@@ -46,12 +46,12 @@ function get_category_title($category_id) {
         $category = mysqli_fetch_assoc($result);
         return $category;
 }
-// видалення новини
-function delete_new($new_id) {
+// видалення лікаря
+function delete_doctor($doctor_id) {
         global $conn;
-        $new_id = mysqli_real_escape_string($conn, $new_id);
+        $doctor_id = mysqli_real_escape_string($conn, $doctor_id);
 
-        $sql = "DELETE FROM news WHERE id =" .$new_id;
+        $sql = "DELETE FROM doctors WHERE id =" .$doctor_id;
         $result = mysqli_query($conn, $sql);
 
 }
