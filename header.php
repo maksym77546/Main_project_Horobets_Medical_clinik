@@ -17,6 +17,8 @@
         <link href="css/styles.css" rel="stylesheet" />
         <!-- Bootstrap CDN for consistent styling -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <!-- Custom medical clinic styles -->
+        <link href="css/main.css" rel="stylesheet" />
         <style>
             .bg-medical { background-color: #0d6efd !important; } /* Blue color */
             .text-medical { color: #0d6efd !important; }

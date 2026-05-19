@@ -1,0 +1,123 @@
+/* ===========================
+   Медична клініка — Main CSS
+   =========================== */
+
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary: #0d6efd;
+    --primary-dark: #0a58ca;
+    --accent: #17a2b8;
+    --bg: #f0f4f8;
+    --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: #333;
+}
+
+/* Navbar */
+.bg-medical {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: 0.5px;
+}
+
+/* Hero header */
+header.py-5 {
+    background: linear-gradient(135deg, #e8f0fe 0%, #ffffff 100%) !important;
+}
+
+header h1 {
+    color: #0a58ca;
+}
+
+/* Cards */
+.card {
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: var(--card-shadow);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 32px rgba(13, 110, 253, 0.15);
+}
+
+.card-img-top {
+    border-radius: 12px 12px 0 0;
+}
+
+/* Buttons */
+.btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    font-weight: 500;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+    border-color: var(--primary);
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+/* Badges */
+.badge.bg-primary {
+    background: linear-gradient(135deg, #0d6efd, #17a2b8) !important;
+    font-size: 0.75rem;
+    padding: 0.4em 0.8em;
+    border-radius: 20px;
+}
+
+/* Section spacing */
+section {
+    padding-bottom: 48px;
+}
+
+/* Sidebar card headers */
+.card-header.bg-primary {
+    background: linear-gradient(135deg, #0d6efd, #0a58ca) !important;
+    border-radius: 10px 10px 0 0 !important;
+}
+
+/* Footer */
+footer {
+    background: #111827 !important;
+}
+
+/* Table in admin */
+.table thead th {
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Hover links */
+a.text-dark:hover {
+    color: var(--primary) !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f0f4f8; }
+::-webkit-scrollbar-thumb { background: #0d6efd; border-radius: 3px; }

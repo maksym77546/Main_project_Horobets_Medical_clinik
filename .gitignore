@@ -1,0 +1,16 @@
+# IDE files
+.idea/
+.vscode/
+
+# Windows thumbnails
+Thumbs.db
+Desktop.ini
+
+# MacOS
+.DS_Store
+
+# Uploaded images (local only)
+assets/uploads/
+
+# Logs
+*.log
