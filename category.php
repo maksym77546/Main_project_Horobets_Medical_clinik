@@ -23,7 +23,7 @@
             <?php foreach ($doctors as $doctor):?>
             <div class="col-md-4 mb-4">
                 <div class="card h-100 shadow-sm border-0">
-                    <img class="card-img-top" src="<?=$doctor['image']?>" alt="<?=$doctor['doctor_name']?>" style="height: 220px; object-fit: cover;" />
+                    <img class="card-img-top" src="<?=$doctor['image']?>" alt="<?=$doctor['doctor_name']?>" style="height: 220px; object-fit: cover; object-position: center top;" />
                     <div class="card-body d-flex flex-column">
                         <div class="small text-primary fw-bold mb-1"><?=$doctor['datetime']=date('d.m.Y', strtotime($doctor['datetime']));?></div>
                         <h3 class="card-title h5 fw-bolder"><?=$doctor['doctor_name']?></h3>

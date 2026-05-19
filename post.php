@@ -14,7 +14,7 @@ if (!$doctor) { header('Location: index.php'); exit(); }
                     <img class="card-img-top"
                          src="<?=$doctor['image']?>"
                          alt="<?=$doctor['doctor_name']?>"
-                         style="max-height: 400px; object-fit: cover;" />
+                         style="max-height: 450px; object-fit: cover; object-position: center top;" />
                     <div class="card-body p-4">
                         <span class="badge bg-primary mb-2">
                             <?php
