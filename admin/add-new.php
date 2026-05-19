@@ -27,14 +27,19 @@ $menus = mysqli_fetch_all(mysqli_query($conn, "SELECT * FROM menu"), MYSQLI_ASSO
             <?php if (isset($_GET['error'])): ?>
             <div class="alert alert-danger">Заповніть усі поля!</div>
             <?php endif; ?>
-            <form action="check-new.php" method="POST">
+            <form action="check-new.php" method="POST" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label fw-bold" for="doctor_name">ПІБ лікаря</label>
                     <input type="text" name="doctor_name" id="doctor_name" class="form-control" placeholder="Ім'я Прізвище По-батькові" required />
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-bold" for="image">URL фото</label>
-                    <input type="url" name="image" id="image" class="form-control" placeholder="https://..." required />
+                    <input type="url" name="image" id="image" class="form-control" placeholder="https://..." />
+                    <div class="form-text">АБО завантажте локальне фото нижче:</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold" for="image_file">Завантажити фото з комп'ютера</label>
+                    <input type="file" name="image_file" id="image_file" class="form-control" accept="image/*" />
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-bold" for="specialization">Спеціалізація / Опис</label>

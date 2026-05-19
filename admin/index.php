@@ -70,7 +70,15 @@ $doctors = mysqli_fetch_all($result, MYSQLI_ASSOC);
                     <?php foreach ($doctors as $doc): ?>
                     <tr>
                         <td><?=$doc['id']?></td>
-                        <td><img src="<?=htmlspecialchars($doc['image'])?>" class="table-img" alt="" /></td>
+                        <td>
+                            <?php 
+                            $imgPath = $doc['image'];
+                            if (strpos($imgPath, 'http') !== 0 && strpos($imgPath, 'assets/') === 0) {
+                                $imgPath = '../' . $imgPath;
+                            }
+                            ?>
+                            <img src="<?=htmlspecialchars($imgPath)?>" class="table-img" alt="" />
+                        </td>
                         <td class="fw-bold"><?=htmlspecialchars($doc['doctor_name'])?></td>
                         <td><?=htmlspecialchars(mb_substr($doc['specialization'],0,60,'utf-8'))?>...</td>
                         <td><span class="badge bg-primary"><?=htmlspecialchars($doc['category'])?></span></td>

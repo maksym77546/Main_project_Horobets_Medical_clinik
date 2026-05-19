@@ -35,7 +35,7 @@ $menus = mysqli_fetch_all(mysqli_query($conn, "SELECT * FROM menu"), MYSQLI_ASSO
             <?php if (isset($_GET['error'])): ?>
             <div class="alert alert-danger">Заповніть усі поля!</div>
             <?php endif; ?>
-            <form action="update.php" method="POST">
+            <form action="update.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?=$doctor['id']?>" />
                 <div class="mb-3">
                     <label class="form-label fw-bold" for="doctor_name">ПІБ лікаря</label>
@@ -45,11 +45,25 @@ $menus = mysqli_fetch_all(mysqli_query($conn, "SELECT * FROM menu"), MYSQLI_ASSO
                 <div class="mb-3">
                     <label class="form-label fw-bold" for="image">URL фото</label>
                     <input type="url" name="image" id="image" class="form-control"
-                           value="<?=htmlspecialchars($doctor['image'])?>" required />
+                           value="<?=htmlspecialchars($doctor['image'])?>" />
+                    <div class="form-text">АБО завантажте нове фото нижче:</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold" for="image_file">Завантажити нове фото з комп'ютера</label>
+                    <input type="file" name="image_file" id="image_file" class="form-control" accept="image/*" />
+                    <?php if (!empty($doctor['image'])): ?>
                     <div class="mt-2">
-                        <img src="<?=htmlspecialchars($doctor['image'])?>" alt="preview"
+                        <span class="small text-muted">Поточне зображення:</span><br>
+                        <?php 
+                        $imgPath = $doctor['image'];
+                        if (strpos($imgPath, 'http') !== 0 && strpos($imgPath, 'assets/') === 0) {
+                            $imgPath = '../' . $imgPath;
+                        }
+                        ?>
+                        <img src="<?=htmlspecialchars($imgPath)?>" alt="preview"
                              style="height:80px; border-radius:8px; object-fit:cover;" />
                     </div>
+                    <?php endif; ?>
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-bold" for="specialization">Спеціалізація / Опис</label>

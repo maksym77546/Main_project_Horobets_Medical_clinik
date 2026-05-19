@@ -12,9 +12,40 @@ $specialization= trim($_POST['specialization'] ?? '');
 $datetime      = trim($_POST['datetime'] ?? '');
 $menu_id       = intval($_POST['menu_id'] ?? 0);
 
-if (!$doctor_name || !$image || !$specialization || !$datetime || !$menu_id) {
+if (!$doctor_name || !$specialization || !$datetime || !$menu_id) {
     header('Location: add-new.php?error=1');
     exit();
+}
+
+// Handle file upload
+$uploadedImage = '';
+if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
+    $fileTmpPath = $_FILES['image_file']['tmp_name'];
+    $fileName = $_FILES['image_file']['name'];
+    $fileNameCmps = explode(".", $fileName);
+    $fileExtension = strtolower(end($fileNameCmps));
+    
+    // Allowed extensions
+    $allowedfileExtensions = array('jpg', 'gif', 'png', 'jpeg', 'webp', 'svg');
+    if (in_array($fileExtension, $allowedfileExtensions)) {
+        // Safe unique file name
+        $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+        $uploadFileDir = '../assets/uploads/';
+        if (!is_dir($uploadFileDir)) {
+            mkdir($uploadFileDir, 0777, true);
+        }
+        $dest_path = $uploadFileDir . $newFileName;
+        if (move_uploaded_file($fileTmpPath, $dest_path)) {
+            $uploadedImage = 'assets/uploads/' . $newFileName;
+        }
+    }
+}
+
+if (!empty($uploadedImage)) {
+    $image = $uploadedImage;
+} elseif (empty($image)) {
+    // Fallback to placeholder if no URL was provided either
+    $image = 'assets/no-image.jpg';
 }
 
 $doctor_name    = mysqli_real_escape_string($conn, $doctor_name);
