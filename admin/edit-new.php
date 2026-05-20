@@ -44,11 +44,19 @@ $menus = mysqli_fetch_all(mysqli_query($conn, "SELECT * FROM menu"), MYSQLI_ASSO
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-bold" for="image">URL фото</label>
-                    <input type="url" name="image" id="image" class="form-control"
-                           value="<?=htmlspecialchars($doctor['image'])?>" />
+                    <?php 
+                        $imageUrl = $doctor['image'];
+                        // Якщо це локальний шлях (починається з assets/), не виводимо його в поле URL
+                        if (strpos($imageUrl, 'http') !== 0) {
+                            $imageUrl = '';
+                        }
+                    ?>
+                    <input type="text" name="image" id="image" class="form-control"
+                           value="<?=htmlspecialchars($imageUrl)?>" placeholder="https://..." />
                     <div class="form-text">АБО завантажте нове фото нижче:</div>
                 </div>
                 <div class="mb-3">
+                    <input type="hidden" name="old_image" value="<?=htmlspecialchars($doctor['image'])?>" />
                     <label class="form-label fw-bold" for="image_file">Завантажити нове фото з комп'ютера</label>
                     <input type="file" name="image_file" id="image_file" class="form-control" accept="image/*" />
                     <?php if (!empty($doctor['image'])): ?>

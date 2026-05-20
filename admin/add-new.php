@@ -34,7 +34,7 @@ $menus = mysqli_fetch_all(mysqli_query($conn, "SELECT * FROM menu"), MYSQLI_ASSO
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-bold" for="image">URL фото</label>
-                    <input type="url" name="image" id="image" class="form-control" placeholder="https://..." />
+                    <input type="text" name="image" id="image" class="form-control" placeholder="https://..." />
                     <div class="form-text">АБО завантажте локальне фото нижче:</div>
                 </div>
                 <div class="mb-3">

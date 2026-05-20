@@ -45,8 +45,8 @@ if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ER
 if (!empty($uploadedImage)) {
     $image = $uploadedImage;
 } elseif (empty($image)) {
-    // If both URL and file are empty, fallback to placeholder
-    $image = 'assets/no-image.jpg';
+    // Якщо нове фото не вибрано і URL порожній, залишаємо старе фото
+    $image = $_POST['old_image'] ?? 'assets/no-image.jpg';
 }
 
 $doctor_name    = mysqli_real_escape_string($conn, $doctor_name);
