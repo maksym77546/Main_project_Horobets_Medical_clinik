@@ -121,3 +121,58 @@ a.text-dark:hover {
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #f0f4f8; }
 ::-webkit-scrollbar-thumb { background: #0d6efd; border-radius: 3px; }
+
+/* Language Switcher */
+.lang-switch {
+    font-weight: 600;
+    padding: 4px 10px !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.lang-switch:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white !important;
+}
+.lang-flag {
+    margin-right: 5px;
+    font-size: 1.1em;
+}
+
+/* Doctor Detail Enhancements */
+.schedule-table th, .schedule-table td {
+    padding: 1rem 1.5rem;
+    vertical-align: middle;
+}
+.schedule-badge {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.bg-success-subtle {
+    background-color: #d1e7dd !important;
+}
+.text-success {
+    color: #0f5132 !important;
+}
+.bg-secondary-subtle {
+    background-color: #e2e3e5 !important;
+}
+.certificate-card {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.certificate-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border-color: #dee2e6;
+}
+
+/* Admin panel cert dynamic inputs */
+.cert-item {
+    border-left: 4px solid var(--primary);
+}

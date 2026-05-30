@@ -5,6 +5,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== 'admin') {
     exit();
 }
 include_once('../conf.php');
+include_once('../function.php'); // For schedule/cert functions
 
 $doctor_name   = trim($_POST['doctor_name'] ?? '');
 $image         = trim($_POST['image'] ?? '');
@@ -28,7 +29,6 @@ if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ER
     // Allowed extensions
     $allowedfileExtensions = array('jpg', 'gif', 'png', 'jpeg', 'webp', 'svg');
     if (in_array($fileExtension, $allowedfileExtensions)) {
-        // Safe unique file name
         $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
         $uploadFileDir = '../assets/uploads/';
         if (!is_dir($uploadFileDir)) {
@@ -44,7 +44,6 @@ if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ER
 if (!empty($uploadedImage)) {
     $image = $uploadedImage;
 } elseif (empty($image)) {
-    // Fallback to placeholder if no URL was provided either
     $image = 'assets/no-image.jpg';
 }
 
@@ -57,6 +56,32 @@ $sql = "INSERT INTO doctors (doctor_name, image, specialization, datetime, menu_
         VALUES ('$doctor_name', '$image', '$specialization', '$datetime', $menu_id)";
 
 if (mysqli_query($conn, $sql)) {
+    $doctor_id = mysqli_insert_id($conn);
+    
+    // Process schedule
+    $schedule_days = $_POST['schedule_days'] ?? [];
+    $schedule_start = $_POST['schedule_start'] ?? [];
+    $schedule_end = $_POST['schedule_end'] ?? [];
+    
+    // Map POST array indexing to day IDs
+    $start_mapped = [];
+    $end_mapped = [];
+    // schedule_start and schedule_end contain ALL 7 values. We need to grab them by index 0-6 corresponding to days 1-7
+    if (!empty($schedule_days)) {
+        foreach ($schedule_days as $day) {
+            $idx = $day - 1; // Array index is 0-6
+            $start_mapped[] = $schedule_start[$idx] ?? '';
+            $end_mapped[] = $schedule_end[$idx] ?? '';
+        }
+        save_doctor_schedule($doctor_id, $schedule_days, $start_mapped, $end_mapped);
+    }
+    
+    // Process certificates
+    $cert_titles = $_POST['cert_title'] ?? [];
+    $cert_dates = $_POST['cert_date'] ?? [];
+    $cert_descs = $_POST['cert_desc'] ?? [];
+    save_doctor_certificates($doctor_id, $cert_titles, $cert_dates, $cert_descs);
+    
     header('Location: index.php?msg=added');
 } else {
     echo 'Помилка: ' . mysqli_error($conn);

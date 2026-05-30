@@ -5,8 +5,8 @@ include_once ('header.php');
 <header class="py-5 bg-light border-bottom mb-4">
     <div class="container">
         <div class="text-center my-5">
-            <h1 class="fw-bolder">Медична клініка</h1>
-            <p class="lead mb-0">Турбота про ваше здоров'я - наш пріоритет</p>
+            <h1 class="fw-bolder"><?=$lang['site_name']?></h1>
+            <p class="lead mb-0"><?=$lang['site_tagline']?></p>
         </div>
     </div>
 </header>
@@ -20,15 +20,15 @@ include_once ('header.php');
                 ?>
                 <h2 class="mb-4">
                     <?php if (!empty($search)): ?>
-                        Результати пошуку: <span class="text-primary">"<?=htmlspecialchars($search)?>"</span>
+                        <?=$lang['search_results']?>: <span class="text-primary">"<?=htmlspecialchars($search)?>"</span>
                     <?php else: ?>
-                        Наші лікарі
+                        <?=$lang['our_doctors']?>
                     <?php endif; ?>
                 </h2>
                 <div class="row">
                     <?php if (empty($doctors)): ?>
                     <div class="col-12">
-                        <div class="alert alert-info">Лікарів за вашим запитом не знайдено. Спробуйте змінити запит.</div>
+                        <div class="alert alert-info"><?=$lang['no_doctors_found']?></div>
                     </div>
                     <?php endif; ?>
                     <?php foreach ($doctors as $doctor):?>
@@ -39,7 +39,7 @@ include_once ('header.php');
                                 <div class="small text-primary fw-bold mb-2"><?=$doctor['datetime']=date('d.m.Y', strtotime($doctor['datetime']));?></div>
                                 <h3 class="card-title h5 fw-bolder"><?=$doctor['doctor_name']?></h3>
                                 <p class="card-text text-muted flex-grow-1"><?=mb_substr($doctor['specialization'],0,150,'utf-8').(mb_strlen($doctor['specialization'])>150?'...':'')?></p>
-                                <a class="btn btn-outline-primary mt-auto" href="post.php?post_id=<?=$doctor['id']?>">Детальніше →</a>
+                                <a class="btn btn-outline-primary mt-auto" href="post.php?post_id=<?=$doctor['id']?>"><?=$lang['details']?></a>
                             </div>
                         </div>
                     </div>
@@ -49,16 +49,16 @@ include_once ('header.php');
             <div class="col-lg-4">
                 <!-- Search widget -->
                 <div class="card mb-4 shadow-sm border-0">
-                    <div class="card-header bg-primary text-white">Пошук</div>
+                    <div class="card-header bg-primary text-white"><?=$lang['search']?></div>
                     <div class="card-body">
                         <form action="index.php" method="GET">
                             <div class="input-group">
-                                <input class="form-control" type="text" name="search" placeholder="Пошук лікаря..." aria-label="Search" aria-describedby="button-search" value="<?=htmlspecialchars($_GET['search'] ?? '')?>" />
-                                <button class="btn btn-primary" id="button-search" type="submit">Шукати!</button>
+                                <input class="form-control" type="text" name="search" placeholder="<?=$lang['search_placeholder']?>" aria-label="Search" aria-describedby="button-search" value="<?=htmlspecialchars($_GET['search'] ?? '')?>" />
+                                <button class="btn btn-primary" id="button-search" type="submit"><?=$lang['search_btn']?></button>
                             </div>
                             <?php if (!empty($search)): ?>
                             <div class="text-end mt-2">
-                                <a href="index.php" class="text-decoration-none small text-danger">✕ Скинути пошук</a>
+                                <a href="index.php" class="text-decoration-none small text-danger"><?=$lang['reset_search']?></a>
                             </div>
                             <?php endif; ?>
                         </form>
@@ -66,7 +66,7 @@ include_once ('header.php');
                 </div>
                 <!-- Categories widget-->
                 <div class="card mb-4 shadow-sm border-0">
-                    <div class="card-header bg-primary text-white">Категорії послуг</div>
+                    <div class="card-header bg-primary text-white"><?=$lang['categories']?></div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-12">
@@ -82,11 +82,11 @@ include_once ('header.php');
                 </div>
                 <!-- Side widget-->
                 <div class="card mb-4 shadow-sm border-0">
-                    <div class="card-header bg-primary text-white">Графік роботи</div>
+                    <div class="card-header bg-primary text-white"><?=$lang['schedule_sidebar']?></div>
                     <div class="card-body">
-                        <p class="mb-1"><strong>Пн-Пт:</strong> 08:00 - 20:00</p>
-                        <p class="mb-1"><strong>Сб:</strong> 09:00 - 15:00</p>
-                        <p class="mb-0"><strong>Нд:</strong> Вихідний</p>
+                        <p class="mb-1"><strong><?=$lang['mon_fri']?>:</strong> 08:00 - 20:00</p>
+                        <p class="mb-1"><strong><?=$lang['sat']?>:</strong> 09:00 - 15:00</p>
+                        <p class="mb-0"><strong><?=$lang['sun']?>:</strong> <?=$lang['day_off']?></p>
                     </div>
                 </div>
             </div>

@@ -5,6 +5,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== 'admin') {
     exit();
 }
 include_once('../conf.php');
+include_once('../function.php'); // For schedule/cert functions
 
 $id             = intval($_POST['id'] ?? 0);
 $doctor_name    = trim($_POST['doctor_name'] ?? '');
@@ -29,7 +30,6 @@ if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ER
     // Allowed extensions
     $allowedfileExtensions = array('jpg', 'gif', 'png', 'jpeg', 'webp', 'svg');
     if (in_array($fileExtension, $allowedfileExtensions)) {
-        // Safe unique file name
         $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
         $uploadFileDir = '../assets/uploads/';
         if (!is_dir($uploadFileDir)) {
@@ -63,6 +63,31 @@ $sql = "UPDATE doctors SET
         WHERE id = $id";
 
 if (mysqli_query($conn, $sql)) {
+    // Process schedule
+    $schedule_days = $_POST['schedule_days'] ?? [];
+    $schedule_start = $_POST['schedule_start'] ?? [];
+    $schedule_end = $_POST['schedule_end'] ?? [];
+    
+    $start_mapped = [];
+    $end_mapped = [];
+    if (!empty($schedule_days)) {
+        foreach ($schedule_days as $day) {
+            $idx = $day - 1; // Array index is 0-6
+            $start_mapped[] = $schedule_start[$idx] ?? '';
+            $end_mapped[] = $schedule_end[$idx] ?? '';
+        }
+        save_doctor_schedule($id, $schedule_days, $start_mapped, $end_mapped);
+    } else {
+        // Clear all schedule if none selected
+        mysqli_query($conn, "DELETE FROM doctor_schedule WHERE doctor_id = $id");
+    }
+    
+    // Process certificates
+    $cert_titles = $_POST['cert_title'] ?? [];
+    $cert_dates = $_POST['cert_date'] ?? [];
+    $cert_descs = $_POST['cert_desc'] ?? [];
+    save_doctor_certificates($id, $cert_titles, $cert_dates, $cert_descs);
+
     header('Location: index.php?msg=updated');
 } else {
     echo 'Помилка: ' . mysqli_error($conn);

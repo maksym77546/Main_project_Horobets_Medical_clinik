@@ -5,19 +5,22 @@
     <div class="container">
         <?php
             $category_id = isset($_GET['category_id']) ? intval($_GET['category_id']) : 0;
-            $doctors = get_doctors_by_category($category_id);
+            if (!$category_id) { header('Location: 404.php'); exit(); }
             $category = get_category_title($category_id);
+            if (!$category) { header('Location: 404.php'); exit(); }
+            
+            $doctors = get_doctors_by_category($category_id);
         ?>
         <h2 class="mt-4 mb-1 fw-bolder">
-            Спеціалізація:
-            <span class="text-primary"><?=$category['title'] ?? 'Невідома категорія'?></span>
+            <?=$lang['specialization']?>
+            <span class="text-primary"><?=$category['title']?></span>
         </h2>
-        <p class="text-muted mb-4">Знайдено лікарів: <strong><?=count($doctors)?></strong></p>
+        <p class="text-muted mb-4"><?=$lang['doctors_found']?> <strong><?=count($doctors)?></strong></p>
         <hr>
         <div class="row">
             <?php if (empty($doctors)): ?>
             <div class="col-12">
-                <div class="alert alert-info">У цій категорії ще немає лікарів.</div>
+                <div class="alert alert-info"><?=$lang['no_doctors_cat']?></div>
             </div>
             <?php endif; ?>
             <?php foreach ($doctors as $doctor):?>
@@ -28,13 +31,13 @@
                         <div class="small text-primary fw-bold mb-1"><?=$doctor['datetime']=date('d.m.Y', strtotime($doctor['datetime']));?></div>
                         <h3 class="card-title h5 fw-bolder"><?=$doctor['doctor_name']?></h3>
                         <p class="card-text text-muted flex-grow-1"><?=mb_substr($doctor['specialization'],0,120,'utf-8').(mb_strlen($doctor['specialization'])>120?'...':'')?></p>
-                        <a class="btn btn-outline-primary mt-auto" href="post.php?post_id=<?=$doctor['id']?>">Детальніше →</a>
+                        <a class="btn btn-outline-primary mt-auto" href="post.php?post_id=<?=$doctor['id']?>"><?=$lang['details']?></a>
                     </div>
                 </div>
             </div>
             <?php endforeach;?>
         </div>
-        <a class="btn btn-secondary mb-4" href="index.php">← Усі лікарі</a>
+        <a class="btn btn-secondary mb-4" href="index.php"><?=$lang['all_doctors']?></a>
     </div>
 </section>
 <?php require_once('footer.php'); ?>
