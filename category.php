@@ -9,7 +9,14 @@
             $category = get_category_title($category_id);
             if (!$category) { header('Location: 404.php'); exit(); }
             
-            $doctors = get_doctors_by_category($category_id);
+            $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+            $limit = 6;
+            $offset = ($page - 1) * $limit;
+            
+            $total_doctors = get_total_doctors_by_category($category_id);
+            $total_pages = ceil($total_doctors / $limit);
+            
+            $doctors = get_doctors_by_category($category_id, $limit, $offset);
         ?>
         <h2 class="mt-4 mb-1 fw-bolder">
             <?=$lang['specialization']?>
@@ -37,6 +44,26 @@
             </div>
             <?php endforeach;?>
         </div>
+        
+        <!-- Pagination -->
+        <?php if ($total_pages > 1): ?>
+        <nav aria-label="Page navigation" class="mb-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item <?=($page <= 1) ? 'disabled' : ''?>">
+                    <a class="page-link" href="?category_id=<?=$category_id?>&page=<?=($page - 1)?>">&laquo;</a>
+                </li>
+                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                    <li class="page-item <?=($page == $i) ? 'active' : ''?>">
+                        <a class="page-link" href="?category_id=<?=$category_id?>&page=<?=$i?>"><?=$i?></a>
+                    </li>
+                <?php endfor; ?>
+                <li class="page-item <?=($page >= $total_pages) ? 'disabled' : ''?>">
+                    <a class="page-link" href="?category_id=<?=$category_id?>&page=<?=($page + 1)?>">&raquo;</a>
+                </li>
+            </ul>
+        </nav>
+        <?php endif; ?>
+        
         <a class="btn btn-secondary mb-4" href="index.php"><?=$lang['all_doctors']?></a>
     </div>
 </section>

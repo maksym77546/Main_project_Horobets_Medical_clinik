@@ -19,6 +19,16 @@ $menus = mysqli_fetch_all(mysqli_query($conn, "SELECT * FROM menu"), MYSQLI_ASSO
 $schedule = get_doctor_schedule($id);
 $certificates = get_doctor_certificates($id);
 
+// Split phone
+$phone = $doctor['phone'] ?? '';
+$phone_code = '+380';
+$phone_number = '';
+if (strpos($phone, '+380') === 0) { $phone_code = '+380'; $phone_number = substr($phone, 4); }
+elseif (strpos($phone, '+48') === 0) { $phone_code = '+48'; $phone_number = substr($phone, 3); }
+elseif (strpos($phone, '+44') === 0) { $phone_code = '+44'; $phone_number = substr($phone, 3); }
+elseif (strpos($phone, '+1') === 0) { $phone_code = '+1'; $phone_number = substr($phone, 2); }
+else { $phone_number = $phone; }
+
 // Map schedule to days for easy checking
 $sched_map = [];
 foreach ($schedule as $s) {
@@ -51,54 +61,82 @@ foreach ($schedule as $s) {
                 <h5 class="border-bottom pb-2 mb-3">Основна інформація</h5>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold" for="doctor_name">ПІБ лікаря *</label>
+                        <label class="form-label fw-bold" for="doctor_name">ПІБ лікаря (УКР) *</label>
                         <input type="text" name="doctor_name" id="doctor_name" class="form-control"
                                value="<?=htmlspecialchars($doctor['doctor_name'])?>" required />
                     </div>
                     <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold" for="doctor_name_en">ПІБ лікаря (EN)</label>
+                        <input type="text" name="doctor_name_en" id="doctor_name_en" class="form-control"
+                               value="<?=htmlspecialchars($doctor['doctor_name_en'] ?? '')?>" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold" for="phone_number">Номер телефону *</label>
+                        <div class="input-group">
+                            <select name="phone_code" class="form-select" style="max-width: 130px;" required>
+                                <option value="+380" <?=$phone_code==='+380'?'selected':''?>>🇺🇦 +380</option>
+                                <option value="+48" <?=$phone_code==='+48'?'selected':''?>>🇵🇱 +48</option>
+                                <option value="+44" <?=$phone_code==='+44'?'selected':''?>>🇬🇧 +44</option>
+                                <option value="+1" <?=$phone_code==='+1'?'selected':''?>>🇺🇸 +1</option>
+                            </select>
+                            <input type="text" name="phone_number" id="phone_number" class="form-control"
+                                   value="<?=htmlspecialchars($phone_number)?>" 
+                                   placeholder="123456789" 
+                                   pattern="[0-9]{9}" 
+                                   title="Формат: 9 цифр, наприклад 991234567" 
+                                   maxlength="9" required />
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold" for="cabinet">Кабінет *</label>
+                        <input type="text" name="cabinet" id="cabinet" class="form-control"
+                               value="<?=htmlspecialchars($doctor['cabinet'] ?? '')?>" placeholder="№ Кабінету" required />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-3">
                         <label class="form-label fw-bold" for="menu_id">Категорія *</label>
                         <select name="menu_id" id="menu_id" class="form-select" required>
                             <?php foreach ($menus as $menu): ?>
                             <option value="<?=$menu['id']?>" <?=$menu['id']==$doctor['menu_id']?'selected':''?>>
-                                <?=htmlspecialchars($menu['title'])?>
+                                <?=htmlspecialchars($menu['title'])?> / <?=htmlspecialchars($menu['title_en'] ?? '')?>
                             </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-bold" for="specialization">Спеціалізація / Опис *</label>
-                    <textarea name="specialization" id="specialization" class="form-control" rows="3" required><?=htmlspecialchars($doctor['specialization'])?></textarea>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" for="specialization">Спеціалізація / Опис (УКР) *</label>
+                        <textarea name="specialization" id="specialization" class="form-control" rows="3" required><?=htmlspecialchars($doctor['specialization'])?></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" for="specialization_en">Спеціалізація / Опис (EN)</label>
+                        <textarea name="specialization_en" id="specialization_en" class="form-control" rows="3"><?=htmlspecialchars($doctor['specialization_en'] ?? '')?></textarea>
+                    </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold" for="image">URL фото</label>
+                <div class="mb-3">
+                    <input type="hidden" name="old_image" value="<?=htmlspecialchars($doctor['image'])?>" />
+                    <label class="form-label fw-bold" for="image_file">Нове фото з ПК</label>
+                    <input type="file" name="image_file" id="image_file" class="form-control" accept="image/*" />
+                    
+                    <?php if (!empty($doctor['image'])): ?>
+                    <div class="mt-2 text-start">
                         <?php 
-                            $imageUrl = $doctor['image'];
-                            if (strpos($imageUrl, 'http') !== 0) { $imageUrl = ''; }
+                        $imgPath = $doctor['image'];
+                        if (strpos($imgPath, 'http') !== 0 && strpos($imgPath, 'assets/') === 0) {
+                            $imgPath = '../' . $imgPath;
+                        }
                         ?>
-                        <input type="text" name="image" id="image" class="form-control"
-                               value="<?=htmlspecialchars($imageUrl)?>" placeholder="https://..." />
+                        <img src="<?=htmlspecialchars($imgPath)?>" alt="preview" style="height:100px; border-radius:4px; object-fit:cover;" title="Поточне фото" />
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <input type="hidden" name="old_image" value="<?=htmlspecialchars($doctor['image'])?>" />
-                        <label class="form-label fw-bold" for="image_file">Нове фото з ПК</label>
-                        <input type="file" name="image_file" id="image_file" class="form-control" accept="image/*" />
-                        
-                        <?php if (!empty($doctor['image'])): ?>
-                        <div class="mt-2 text-end">
-                            <?php 
-                            $imgPath = $doctor['image'];
-                            if (strpos($imgPath, 'http') !== 0 && strpos($imgPath, 'assets/') === 0) {
-                                $imgPath = '../' . $imgPath;
-                            }
-                            ?>
-                            <img src="<?=htmlspecialchars($imgPath)?>" alt="preview" style="height:50px; border-radius:4px; object-fit:cover;" title="Поточне фото" />
-                        </div>
-                        <?php endif; ?>
-                    </div>
+                    <?php endif; ?>
                 </div>
                 
                 <div class="mb-4">
@@ -143,14 +181,20 @@ foreach ($schedule as $s) {
                             </button>
                         </div>
                         <div class="row">
-                            <div class="col-md-8 mb-2">
-                                <input type="text" name="cert_title[]" class="form-control" value="<?=htmlspecialchars($cert['title'])?>" placeholder="Назва сертифікату" required>
+                            <div class="col-md-6 mb-2">
+                                <input type="text" name="cert_title[]" class="form-control" value="<?=htmlspecialchars($cert['title'])?>" placeholder="Назва (УКР) *" required>
                             </div>
-                            <div class="col-md-4 mb-2">
+                            <div class="col-md-6 mb-2">
+                                <input type="text" name="cert_title_en[]" class="form-control" value="<?=htmlspecialchars($cert['title_en'] ?? '')?>" placeholder="Title (EN)">
+                            </div>
+                            <div class="col-md-12 mb-2">
                                 <input type="date" name="cert_date[]" class="form-control" value="<?=$cert['issued_date']?>" title="Дата видачі">
                             </div>
-                            <div class="col-12">
-                                <input type="text" name="cert_desc[]" class="form-control" value="<?=htmlspecialchars($cert['description'])?>" placeholder="Короткий опис">
+                            <div class="col-md-6">
+                                <input type="text" name="cert_desc[]" class="form-control" value="<?=htmlspecialchars($cert['description'])?>" placeholder="Опис (УКР)">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" name="cert_desc_en[]" class="form-control" value="<?=htmlspecialchars($cert['description_en'] ?? '')?>" placeholder="Description (EN)">
                             </div>
                         </div>
                     </div>
@@ -196,14 +240,20 @@ foreach ($schedule as $s) {
                 </button>
             </div>
             <div class="row">
-                <div class="col-md-8 mb-2">
-                    <input type="text" name="cert_title[]" class="form-control" placeholder="Назва сертифікату (обов'язково)" required>
+                <div class="col-md-6 mb-2">
+                    <input type="text" name="cert_title[]" class="form-control" placeholder="Назва (УКР) *" required>
                 </div>
-                <div class="col-md-4 mb-2">
+                <div class="col-md-6 mb-2">
+                    <input type="text" name="cert_title_en[]" class="form-control" placeholder="Title (EN)">
+                </div>
+                <div class="col-md-12 mb-2">
                     <input type="date" name="cert_date[]" class="form-control" title="Дата видачі">
                 </div>
-                <div class="col-12">
-                    <input type="text" name="cert_desc[]" class="form-control" placeholder="Короткий опис або ким виданий">
+                <div class="col-md-6">
+                    <input type="text" name="cert_desc[]" class="form-control" placeholder="Опис (УКР)">
+                </div>
+                <div class="col-md-6">
+                    <input type="text" name="cert_desc_en[]" class="form-control" placeholder="Description (EN)">
                 </div>
             </div>
         </div>

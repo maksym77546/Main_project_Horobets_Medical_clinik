@@ -9,8 +9,13 @@ include_once('../function.php'); // For schedule/cert functions
 
 $id             = intval($_POST['id'] ?? 0);
 $doctor_name    = trim($_POST['doctor_name'] ?? '');
-$image          = trim($_POST['image'] ?? '');
+$doctor_name_en = trim($_POST['doctor_name_en'] ?? '');
+$phone_code     = trim($_POST['phone_code'] ?? '+380');
+$phone_number   = trim($_POST['phone_number'] ?? '');
+$phone          = $phone_code . $phone_number;
+$cabinet        = trim($_POST['cabinet'] ?? '');
 $specialization = trim($_POST['specialization'] ?? '');
+$specialization_en = trim($_POST['specialization_en'] ?? '');
 $datetime       = trim($_POST['datetime'] ?? '');
 $menu_id        = intval($_POST['menu_id'] ?? 0);
 
@@ -44,20 +49,28 @@ if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ER
 
 if (!empty($uploadedImage)) {
     $image = $uploadedImage;
-} elseif (empty($image)) {
-    // Якщо нове фото не вибрано і URL порожній, залишаємо старе фото
+} else {
+    // Якщо нове фото не вибрано залишаємо старе фото
     $image = $_POST['old_image'] ?? 'assets/no-image.jpg';
 }
 
-$doctor_name    = mysqli_real_escape_string($conn, $doctor_name);
-$image          = mysqli_real_escape_string($conn, $image);
-$specialization = mysqli_real_escape_string($conn, $specialization);
-$datetime       = mysqli_real_escape_string($conn, $datetime);
+$doctor_name       = mysqli_real_escape_string($conn, $doctor_name);
+$doctor_name_en    = mysqli_real_escape_string($conn, $doctor_name_en);
+$phone             = mysqli_real_escape_string($conn, $phone);
+$cabinet           = mysqli_real_escape_string($conn, $cabinet);
+$image             = mysqli_real_escape_string($conn, $image);
+$specialization    = mysqli_real_escape_string($conn, $specialization);
+$specialization_en = mysqli_real_escape_string($conn, $specialization_en);
+$datetime          = mysqli_real_escape_string($conn, $datetime);
 
 $sql = "UPDATE doctors SET
             doctor_name = '$doctor_name',
+            doctor_name_en = '$doctor_name_en',
+            phone = '$phone',
+            cabinet = '$cabinet',
             image = '$image',
             specialization = '$specialization',
+            specialization_en = '$specialization_en',
             datetime = '$datetime',
             menu_id = $menu_id
         WHERE id = $id";
@@ -84,9 +97,11 @@ if (mysqli_query($conn, $sql)) {
     
     // Process certificates
     $cert_titles = $_POST['cert_title'] ?? [];
+    $cert_titles_en = $_POST['cert_title_en'] ?? [];
     $cert_dates = $_POST['cert_date'] ?? [];
     $cert_descs = $_POST['cert_desc'] ?? [];
-    save_doctor_certificates($id, $cert_titles, $cert_dates, $cert_descs);
+    $cert_descs_en = $_POST['cert_desc_en'] ?? [];
+    save_doctor_certificates($id, $cert_titles, $cert_titles_en, $cert_dates, $cert_descs, $cert_descs_en);
 
     header('Location: index.php?msg=updated');
 } else {

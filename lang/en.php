@@ -29,6 +29,7 @@ $lang = [
     'sat'               => 'Sat',
     'sun'               => 'Sun',
     'day_off'           => 'Day off',
+    'individual_schedule'=> 'Each doctor has an individual appointment schedule.',
     
     // Doctor page
     'date_added'        => 'Date added:',

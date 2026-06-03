@@ -20,8 +20,7 @@
             <!-- Column 3: Schedule & Info -->
             <div class="col-md-4 mb-3">
                 <h6 class="fw-bold text-white text-uppercase mb-3" style="letter-spacing: 1px;"><?=$lang['footer_schedule']?></h6>
-                <p class="small text-white-50 mb-2">📅 <strong><?=$lang['mon_fri']?>:</strong> 08:00 – 20:00</p>
-                <p class="small text-white-50 mb-3">📅 <strong><?=$lang['sat']?>:</strong> 09:00 – 15:00</p>
+                <p class="small text-white-50 mb-3"><?=$lang['individual_schedule']?></p>
                 <div class="alert alert-danger py-2 px-3 mb-0 small text-center" role="alert" style="background: rgba(220, 53, 69, 0.15); border: 1px solid rgba(220, 53, 69, 0.3); color: #f87171;">
                     <strong><?=$lang['footer_emergency']?></strong> +38 (044) 123-45-03
                 </div>

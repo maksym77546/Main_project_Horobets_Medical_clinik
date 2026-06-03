@@ -16,7 +16,14 @@ include_once ('header.php');
             <div class="col-lg-8">
                 <?php 
                 $search = trim($_GET['search'] ?? '');
-                $doctors = get_doctors($search);
+                $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+                $limit = 6;
+                $offset = ($page - 1) * $limit;
+                
+                $total_doctors = get_total_doctors($search);
+                $total_pages = ceil($total_doctors / $limit);
+                
+                $doctors = get_doctors($search, $limit, $offset);
                 ?>
                 <h2 class="mb-4">
                     <?php if (!empty($search)): ?>
@@ -45,6 +52,28 @@ include_once ('header.php');
                     </div>
                     <?php endforeach;?>
                 </div>
+                
+                <!-- Pagination -->
+                <?php if ($total_pages > 1): ?>
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <?php
+                        $search_query = !empty($search) ? '&search=' . urlencode($search) : '';
+                        ?>
+                        <li class="page-item <?=($page <= 1) ? 'disabled' : ''?>">
+                            <a class="page-link" href="?page=<?=($page - 1)?><?=$search_query?>">&laquo;</a>
+                        </li>
+                        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                            <li class="page-item <?=($page == $i) ? 'active' : ''?>">
+                                <a class="page-link" href="?page=<?=$i?><?=$search_query?>"><?=$i?></a>
+                            </li>
+                        <?php endfor; ?>
+                        <li class="page-item <?=($page >= $total_pages) ? 'disabled' : ''?>">
+                            <a class="page-link" href="?page=<?=($page + 1)?><?=$search_query?>">&raquo;</a>
+                        </li>
+                    </ul>
+                </nav>
+                <?php endif; ?>
             </div>
             <div class="col-lg-4">
                 <!-- Search widget -->
@@ -84,9 +113,7 @@ include_once ('header.php');
                 <div class="card mb-4 shadow-sm border-0">
                     <div class="card-header bg-primary text-white"><?=$lang['schedule_sidebar']?></div>
                     <div class="card-body">
-                        <p class="mb-1"><strong><?=$lang['mon_fri']?>:</strong> 08:00 - 20:00</p>
-                        <p class="mb-1"><strong><?=$lang['sat']?>:</strong> 09:00 - 15:00</p>
-                        <p class="mb-0"><strong><?=$lang['sun']?>:</strong> <?=$lang['day_off']?></p>
+                        <p class="mb-1"><?=$lang['individual_schedule']?></p>
                     </div>
                 </div>
             </div>

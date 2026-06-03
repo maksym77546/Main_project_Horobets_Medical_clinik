@@ -33,34 +33,65 @@ $menus = mysqli_fetch_all(mysqli_query($conn, "SELECT * FROM menu"), MYSQLI_ASSO
                 <h5 class="border-bottom pb-2 mb-3">Основна інформація</h5>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold" for="doctor_name">ПІБ лікаря *</label>
+                        <label class="form-label fw-bold" for="doctor_name">ПІБ лікаря (УКР) *</label>
                         <input type="text" name="doctor_name" id="doctor_name" class="form-control" placeholder="Ім'я Прізвище" required />
                     </div>
                     <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold" for="doctor_name_en">ПІБ лікаря (EN)</label>
+                        <input type="text" name="doctor_name_en" id="doctor_name_en" class="form-control" placeholder="Name Surname" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold" for="phone_number">Номер телефону *</label>
+                        <div class="input-group">
+                            <select name="phone_code" class="form-select" style="max-width: 130px;" required>
+                                <option value="+380" selected>🇺🇦 +380</option>
+                                <option value="+48">🇵🇱 +48</option>
+                                <option value="+44">🇬🇧 +44</option>
+                                <option value="+1">🇺🇸 +1</option>
+                            </select>
+                            <input type="text" name="phone_number" id="phone_number" class="form-control" 
+                                   placeholder="123456789" 
+                                   pattern="[0-9]{9}" 
+                                   title="Формат: 9 цифр, наприклад 991234567" 
+                                   maxlength="9" required />
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold" for="cabinet">Кабінет *</label>
+                        <input type="text" name="cabinet" id="cabinet" class="form-control" placeholder="№ Кабінету" required />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-3">
                         <label class="form-label fw-bold" for="menu_id">Категорія *</label>
                         <select name="menu_id" id="menu_id" class="form-select" required>
                             <option value="">-- Оберіть категорію --</option>
                             <?php foreach ($menus as $menu): ?>
-                            <option value="<?=$menu['id']?>"><?=htmlspecialchars($menu['title'])?></option>
+                            <option value="<?=$menu['id']?>"><?=htmlspecialchars($menu['title'])?> / <?=htmlspecialchars($menu['title_en'])?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-bold" for="specialization">Спеціалізація / Опис *</label>
-                    <textarea name="specialization" id="specialization" class="form-control" rows="3" placeholder="Опишіть спеціалізацію..." required></textarea>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" for="specialization">Спеціалізація / Опис (УКР) *</label>
+                        <textarea name="specialization" id="specialization" class="form-control" rows="3" placeholder="Опишіть спеціалізацію..." required></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" for="specialization_en">Спеціалізація / Опис (EN)</label>
+                        <textarea name="specialization_en" id="specialization_en" class="form-control" rows="3" placeholder="Describe specialization..."></textarea>
+                    </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold" for="image">URL фото</label>
-                        <input type="text" name="image" id="image" class="form-control" placeholder="https://..." />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold" for="image_file">АБО Фото з ПК</label>
-                        <input type="file" name="image_file" id="image_file" class="form-control" accept="image/*" />
-                    </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold" for="image_file">Фото з ПК</label>
+                    <input type="file" name="image_file" id="image_file" class="form-control" accept="image/*" />
+                    <small class="text-muted">Якщо фото не вибрано, буде використана стандартна заглушка.</small>
                 </div>
                 <div class="mb-4">
                     <label class="form-label fw-bold" for="datetime">Дата додавання *</label>
@@ -133,14 +164,20 @@ $menus = mysqli_fetch_all(mysqli_query($conn, "SELECT * FROM menu"), MYSQLI_ASSO
                 </button>
             </div>
             <div class="row">
-                <div class="col-md-8 mb-2">
-                    <input type="text" name="cert_title[]" class="form-control" placeholder="Назва сертифікату (обов'язково)" required>
+                <div class="col-md-6 mb-2">
+                    <input type="text" name="cert_title[]" class="form-control" placeholder="Назва (УКР) *" required>
                 </div>
-                <div class="col-md-4 mb-2">
+                <div class="col-md-6 mb-2">
+                    <input type="text" name="cert_title_en[]" class="form-control" placeholder="Title (EN)">
+                </div>
+                <div class="col-md-12 mb-2">
                     <input type="date" name="cert_date[]" class="form-control" title="Дата видачі">
                 </div>
-                <div class="col-12">
-                    <input type="text" name="cert_desc[]" class="form-control" placeholder="Короткий опис або ким виданий">
+                <div class="col-md-6">
+                    <input type="text" name="cert_desc[]" class="form-control" placeholder="Опис (УКР)">
+                </div>
+                <div class="col-md-6">
+                    <input type="text" name="cert_desc_en[]" class="form-control" placeholder="Description (EN)">
                 </div>
             </div>
         </div>
